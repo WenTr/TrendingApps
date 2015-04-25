@@ -11,11 +11,13 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import API
 
-consumer_key = "AQOeMUImTqcPLm1KS847pdo6Y"
-consumer_secret = "FNFXTMjfyABt57UHaxstz2p8juasQRBenulQqGhqo85T1KxhCK"
+#Comsumer key/secret hidden
+consumer_key = ""
+consumer_secret = ""
 
-access_token = "313601183-CQKz2PLX8ohQZyaLDyQ64Vvp2Z3Q1Eq4CkbDtc8O"
-access_secret = "1NbqrzmR7JaWKewqAVRXrk7FgJklGDpvrmpyONtuAqYbP"
+#Access key/secret hidden
+access_token = ""
+access_secret = ""
 
 def main():
     authTwitter()
