@@ -25,6 +25,7 @@ from tweepy import OAuthHandler
 from tweepy import Stream
 from tweepy import API
 
+<<<<<<< HEAD
 '''
 import urllib3.contrib.pyopenssl
 urllib3.contrib.pyopenssl.inject_into_urllib3()
@@ -37,6 +38,15 @@ access_token = ""
 access_secret = ""
 
 appsList = ["basketball"]
+=======
+#Comsumer key/secret hidden
+consumer_key = ""
+consumer_secret = ""
+
+#Access key/secret hidden
+access_token = ""
+access_secret = ""
+>>>>>>> origin/twitter
 
 
 def main():
