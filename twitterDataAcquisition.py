@@ -31,8 +31,9 @@ import urllib3.contrib.pyopenssl
 urllib3.contrib.pyopenssl.inject_into_urllib3()
 '''
 
-consumer_key = "AQOeMUImTqcPLm1KS847pdo6Y"
-consumer_secret = "FNFXTMjfyABt57UHaxstz2p8juasQRBenulQqGhqo85T1KxhCK"
+#Comsumer key/secret hidden
+consumer_key = ""
+consumer_secret = ""
 
 access_token = ""
 access_secret = ""
