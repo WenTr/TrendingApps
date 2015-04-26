@@ -11,13 +11,13 @@ TwitterSearch External Library: https://github.com/ckoepp/TwitterSearch
 from TwitterSearch import *
 import time
 
+from json import dumps
+
 class TwitterDataAcquisition:
     
-    # Consumer key/secret hidden
     consumer_key = ""
     consumer_secret = ""
     
-    # Token key/secret hidden
     access_token = ""
     access_secret = ""
     
@@ -40,18 +40,26 @@ class TwitterDataAcquisition:
         auth = TwitterSearch(self.consumer_key, self.consumer_secret, 
                              self.access_token, self.access_secret)
                 
+        appsDict = {}
+            
+        tweetDict = self.searchTweets(auth, ["facebook app"])
+        appsDict["facebook app"] = tweetDict
+                    
+        self.infoDict["twitter"] = appsDict
+        
+        
+        '''
         for app in self.dynAppsList:
             time.sleep(30)
             appsDict = {}
             
-            #tweetDict = self.searchTweets(auth, [app + " app"])
-            tweetDict = self.searchTweets(auth, ["facebook app"])
+            tweetDict = self.searchTweets(auth, [app + " app"])
             appsDict[app] = tweetDict
                     
         self.infoDict["twitter"] = appsDict
         
         return self.infoDict
-    
+        '''
     def searchTweets(self, auth, keyword):
         tweetID = 0
         tweetDict = {}
@@ -61,6 +69,7 @@ class TwitterDataAcquisition:
         searchQuery.set_count(1)
         
         for tweet in auth.search_tweets_iterable(searchQuery):
+            time.sleep(5)
             tweetDict["tweetID"] = tweetID + 1
             for jsonKey in self.jsonKeysList:
                 if jsonKey == "user":
@@ -76,3 +85,15 @@ class TwitterDataAcquisition:
                     tweetDict[jsonKey] = tweet[jsonKey]
         
         return tweetDict
+    
+def main():
+    twitterData = TwitterDataAcquisition()
+        
+    #jsonFile = ("twitter_data.json", "w")
+    #jsonFile.write(str(twitterData))
+    #jsonFile.close()
+    
+    print dumps(twitterData)
+
+if __name__ == '__main__':
+    main()
