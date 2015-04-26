@@ -1,4 +1,6 @@
+from TA_GP import GooglePlay
 from youtube import Youtube
+from twitterDataAcquisition import TwitterDataAcquisition
 import json
 
 def youtube_vid_info(apps):   
@@ -11,22 +13,24 @@ def youtube_vid_info(apps):
             apps_name_change.append(apps[x])
     yt = Youtube()
     youtube_info = yt.get_dictionary_list(apps_name_change, apps)
-#    f = open('youtube.json', 'w')    
-#    f.write(str(youtube_info))
-#    f.close()
+    #f = open('youtube.json', 'w')    
+    #f.write(json.dumps(youtube_info, indent=4))
+    #f.close()
     print json.dumps(youtube_info, indent=4)
     
 def google_app_info():
-    pass    
-
-def twitter_info():
-    pass
+    google = GooglePlay()
+    app_list = google.getGPInfo()    
+    return app_list
+    
+def twitter_info(app_list):
+    twitter = TwitterDataAcquisition(app_list)
+    return twitter
   
 def main():
-    apps = ['Messenger', 'Criminal Case', 'Facebook', 'Pandora® Radio', 'Instagram', 
-            'Snapchat', 'Dubsmash','Super-Bright LED Flashlight', 'Spotify Music',
-            'Clean Master (Speed Booster)']    
+    apps = google_app_info()    
     youtube_vid_info(apps)
+    twitter_info(apps)
     
 if __name__ == "__main__":
     main()
