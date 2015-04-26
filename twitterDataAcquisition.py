@@ -10,8 +10,7 @@ TwitterSearch External Library: https://github.com/ckoepp/TwitterSearch
 
 from TwitterSearch import *
 import time
-
-from json import dumps
+import json
 
 class TwitterDataAcquisition:
     
@@ -20,11 +19,6 @@ class TwitterDataAcquisition:
     
     access_token = ""
     access_secret = ""
-    
-    dynAppsList = ["Messenger", "Criminal Case", "Facebook", "Pandora Radio", 
-                   "Instagram", "Snapchat", "Dubsmash",
-                   "Super-Bright LED Flashlight", "Spotify Music",
-                   "Clean Master (Speed Booster)"]
         
     jsonKeysList = ["created_at", "text", "retweet_count", "source", "user"]
     
@@ -32,14 +26,16 @@ class TwitterDataAcquisition:
                         "friends_count", "created_at", "time_zone"]
     
     infoDict = {}        
+    dynAppsList = []
     
-    def __init__(self):
+    def __init__(self, dynAppsList):
+        self.dynAppsList = dynAppsList
         self.getTwitterData()
     
     def getTwitterData(self):
         auth = TwitterSearch(self.consumer_key, self.consumer_secret, 
                              self.access_token, self.access_secret)
-                
+        '''        
         appsDict = {}
             
         tweetDict = self.searchTweets(auth, ["facebook app"])
@@ -47,10 +43,8 @@ class TwitterDataAcquisition:
                     
         self.infoDict["twitter"] = appsDict
         
-        
         '''
         for app in self.dynAppsList:
-            time.sleep(30)
             appsDict = {}
             
             tweetDict = self.searchTweets(auth, [app + " app"])
@@ -59,7 +53,7 @@ class TwitterDataAcquisition:
         self.infoDict["twitter"] = appsDict
         
         return self.infoDict
-        '''
+        
     def searchTweets(self, auth, keyword):
         tweetID = 0
         tweetDict = {}
@@ -69,7 +63,6 @@ class TwitterDataAcquisition:
         searchQuery.set_count(1)
         
         for tweet in auth.search_tweets_iterable(searchQuery):
-            time.sleep(5)
             tweetDict["tweetID"] = tweetID + 1
             for jsonKey in self.jsonKeysList:
                 if jsonKey == "user":
@@ -84,16 +77,5 @@ class TwitterDataAcquisition:
                 else:
                     tweetDict[jsonKey] = tweet[jsonKey]
         
+        print json.dumps(tweetDict, indent = 4)
         return tweetDict
-    
-def main():
-    twitterData = TwitterDataAcquisition()
-        
-    #jsonFile = ("twitter_data.json", "w")
-    #jsonFile.write(str(twitterData))
-    #jsonFile.close()
-    
-    print dumps(twitterData)
-
-if __name__ == '__main__':
-    main()
