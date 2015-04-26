@@ -1,3 +1,9 @@
+'''
+souurces: 
+Beautiful Soup 4 Documentation: http://www.crummy.com/software/BeautifulSoup/
+Screen Scraping Tutorial: https://www.youtube.com/watch?v=3xQTJi2tqgk
+Python Documentation: https://docs.python.org/2/
+'''
 from bs4 import BeautifulSoup
 import requests
 
@@ -64,8 +70,3 @@ class Youtube:
         youtube_info = {'youtube': apps_list}
 
         return youtube_info
-        
-#    def get_description(self, soup):
-#        description = soup.find_all('p', {'id':'eow-description'})
-#        for i in description:    
-#            return i.text
