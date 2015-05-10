@@ -15,23 +15,19 @@ http://www.crummy.com/software/BeautifulSoup/
 http://www.crummy.com/software/BeautifulSoup/bs4/doc/
 http://stackoverflow.com/questions/5041008/handling-class-attribute-in-beautifulsoup
 http://stackoverflow.com/questions/18851325/adding-more-values-on-existing-python-dictionary-key
+http://www.crummy.com/software/BeautifulSoup/bs4/doc/#next-sibling-and-previous-sibling
+http://stackoverflow.com/questions/23380171/using-beautifulsoup-extract-text-without-tags
+http://stackoverflow.com/questions/1024847/add-key-to-a-dictionary-in-python
+http://www.crummy.com/software/BeautifulSoup/bs4/doc/
+https://docs.python.org/2/library/uuid.html
+https://github.com/behackett/presentations/blob/master/pycon_2012/Lesson%201.1:%20Getting%20Started.ipynb
 '''
 
 import requests
-import pprint
+#import pprint
 import json
-from bs4 import BeautifulSoup 
-'''
-def getListOfApps(wC):
-    allLinks = []
-    links = wC.find_all('a', {'class' : 'title'})
-    for link in range(len(links)):
-        a = links[link].text.encode('ascii', 'ignore')
-        x = link+1        
-        a.strip(str(x) + '.' + ' ')
-        allLinks.append(a)
-    return allLinks
-'''
+import uuid
+from bs4 import BeautifulSoup
 
 class GooglePlay:
     
@@ -46,10 +42,11 @@ class GooglePlay:
         titles = []
         appInfo = {}
         links = wC.find_all('a', {'class' : 'title'})
+        
         #top 10 apps
         for x in range(0, 10):
             titles.append(links[x].get('title').encode('ascii', 'ignore'))
-            appInfo[(links[x].get('title').encode('ascii', 'ignore'))]= {'appLink':'https://play.google.com/'+links[x].get('href')}
+            appInfo[(links[x].get('title').encode('ascii', 'ignore'))] = {'AppLink':'https://play.google.com/'+links[x].get('href'), 'Rank':links[x].text.split()[0].replace('.', '')}
         return (titles, appInfo)
         
     def getCompanies(self, aC):
@@ -71,12 +68,31 @@ class GooglePlay:
         numOfReviews = aC.find_all('span', {'class': 'reviews-num'})
         for a in numOfReviews:
             return str(a.text)
-            
+    
     '''    
-    def getDescription():
-        
-    def getReviews():
-    '''
+    def getDescription(self, aC): 
+        def getNumOfReviewers(self, aC):
+        appDesc = aC.find_all('div', {'class': 'id-app-orig-desc'})
+        for a in appDesc:
+            return str(a.text)
+    '''        
+    
+    def getReviews(self, aC):
+        reviewDict = {}      
+        reviewInfo = {}        
+
+        singleReviews = aC.findAll('div', {'class': 'single-review'})
+        for eachReview in singleReviews:
+            reviewInfo['User'] = eachReview.find('span', {'class': 'author-name'}).text
+            reviewInfo['Date'] = eachReview.find('span', {'class': 'review-date'}).text
+            reviewInfo['Rating'] = eachReview.find('div', {'class': 'tiny-star star-rating-non-editable-container'})['aria-label']
+            reviewInfo['Title'] = eachReview.find('span', {'class': 'review-title'}).text
+            reviewInfo['Comment'] = eachReview.find('span', {'class': 'review-title'}).next_sibling
+            #print reviewInfo
+            reviewDict[str(uuid.uuid4())] = reviewInfo
+            reviewInfo = {}
+        #print json.dumps(reviewDict, indent=4)
+        return reviewDict
     
     def getLastUpdated(self, aC):
         lastUpdated = aC.find_all('div', {'itemprop': 'datePublished'})
@@ -116,6 +132,7 @@ class GooglePlay:
         allAppInfo[appKey]['AndroidOSReq'] = self.getAndrOSReq(aC)
         allAppInfo[appKey]['ContentRating'] = self.getContentRating(aC)
         allAppInfo[appKey]['InAppPurchases'] = self.getInAppPurch(aC)
+        allAppInfo[appKey]['Reviews'] = self.getReviews(aC)
         return allAppInfo
     
     def getGPInfo(self):
@@ -127,17 +144,24 @@ class GooglePlay:
         allAppInfo = {}
         topApps = {}
         
+        titles = self.getTitleOfApps(wC)
+        
         #=============
         #---> List of Title of Apps: Send to all Other Classes to Search <---
-        appTitles = self.getTitleOfApps(wC)[0]
+        appTitles = titles[0]
         #=============
         
-        allAppInfo = self.getTitleOfApps(wC)[1]
+        allAppInfo = titles[1]
         
+        #loops through all the apps to get app Info
         for appKey in allAppInfo.keys():
-            allAppInfo = self.getAppInfo(appKey, allAppInfo[appKey]['appLink'], allAppInfo)
+            allAppInfo = self.getAppInfo(appKey, allAppInfo[appKey]['AppLink'], allAppInfo)
+            
+        #################################
+        #########Test Value##############
+        #allAppInfo = self.getAppInfo('Criminal Case', allAppInfo['Criminal Case']['AppLink'], allAppInfo)
+        #################################
     
         topApps['GooglePlay'] = allAppInfo
-        print json.dumps(topApps, indent=4)
-        
-        return appTitles
+        #print json.dumps(topApps, indent=4)
+        return (appTitles, topApps)
