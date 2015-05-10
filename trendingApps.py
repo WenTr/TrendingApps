@@ -1,27 +1,18 @@
+
 from TA_GP import GooglePlay
-from youtube import Youtube
+from youtubeAPI import YoutubeAPI
 from twitterDataAcquisition import TwitterDataAcquisition
-#from twitterScreenScrape import TwitterScreenScrape
+from twitterScreenScrape import TwitterScreenScrape
 import json
 
 def youtube_vid_info(apps):   
-    apps_name_change = []
-    for x in range(len(apps)):
-        if ' ' in apps[x]:
-            a = apps[x].replace(' ', '+')
-            apps_name_change.append(a)    
-        else:
-            apps_name_change.append(apps[x])
-    yt = Youtube()
-    youtube_info = yt.get_dictionary_list(apps_name_change, apps)
-    #f = open('youtube.json', 'w')    
-    #f.write(json.dumps(youtube_info, indent=4))
-    #f.close()
-    print json.dumps(youtube_info, indent=4)
+    youtube = YoutubeAPI()
+	vid_dict = youtube.get_all_info(apps)
+	return vid_dict
     
 def google_app_info():
     google = GooglePlay()
-    app_list = google.getGPInfo()    
+    app_list = google.getGPInfo()
     return app_list
     
 def twitter_info(app_list):
@@ -30,7 +21,7 @@ def twitter_info(app_list):
     return twitter
   
 def main():
-    apps = google_app_info()    
+    apps, gpInfo = google_app_info()   
     youtube_vid_info(apps)
     twitter_info(apps)
     
