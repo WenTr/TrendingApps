@@ -7,8 +7,8 @@ import json
 
 def youtube_vid_info(apps):   
     youtube = YoutubeAPI()
-	vid_dict = youtube.get_all_info(apps)
-	return vid_dict
+    vid_dict = youtube.get_all_info(apps)
+    return vid_dict
     
 def google_app_info():
     google = GooglePlay()
@@ -17,7 +17,7 @@ def google_app_info():
     
 def twitter_info(app_list):
     #twitter = TwitterDataAcquisition(app_list)
-    twitter = TwitterScreenScrape(appList)
+    twitter = TwitterScreenScrape(app_list)
     return twitter
   
 def main():
