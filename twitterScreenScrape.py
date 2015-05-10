@@ -19,9 +19,8 @@ class TwitterScreenScrape:
     access_token = ''
     access_secret = ''
         
-    def __init__(self, app_list):
-        self.app_list = app_list
-        self.get_twitter_data(app_list)
+    def __init__(self):
+        pass
         
     def get_twitter_data(self, app_list):
         twitter_dict = {}
