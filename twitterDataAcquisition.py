@@ -14,11 +14,11 @@ import json
 
 class TwitterDataAcquisition:
     
-    consumer_key = ""
-    consumer_secret = ""
+    consumer_key = ''
+    consumer_secret = ''
     
-    access_token = ""
-    access_secret = ""
+    access_token = ''
+    access_secret = ''
         
     jsonKeysList = ["created_at", "text", "retweet_count", "source", "user"]
     
@@ -35,18 +35,10 @@ class TwitterDataAcquisition:
     def getTwitterData(self):
         auth = TwitterSearch(self.consumer_key, self.consumer_secret, 
                              self.access_token, self.access_secret)
-        '''        
-        appsDict = {}
-            
-        tweetDict = self.searchTweets(auth, ["facebook app"])
-        appsDict["facebook app"] = tweetDict
-                    
-        self.infoDict["twitter"] = appsDict
-        
-        '''
+
         for app in self.dynAppsList:
             appsDict = {}
-            
+
             tweetDict = self.searchTweets(auth, [app + " app"])
             appsDict[app] = tweetDict
                     
@@ -57,13 +49,21 @@ class TwitterDataAcquisition:
     def searchTweets(self, auth, keyword):
         tweetID = 0
         tweetDict = {}
-        
+        tweetCounter = 0
+        print keyword
         searchQuery = TwitterSearchOrder()
         searchQuery.set_keywords(keyword)
         searchQuery.set_count(1)
         
         for tweet in auth.search_tweets_iterable(searchQuery):
-            tweetDict["tweetID"] = tweetID + 1
+            if tweetCounter == 175:
+                tweetCounter = 0
+                time.sleep(60)
+                
+            tweetCounter += 1
+                        
+            tweetID += 1
+            tweetDict["tweetID"] = tweetID
             for jsonKey in self.jsonKeysList:
                 if jsonKey == "user":
                     userDict = {}
@@ -73,9 +73,10 @@ class TwitterDataAcquisition:
                     tweetDict[jsonKey] = userDict
                 elif jsonKey == "source":                    
                     sourceString = tweet[jsonKey]
-                    tweetDict[jsonKey] = sourceString.strip("\\")
+                    tweetDict[jsonKey] = sourceString.replace('\\', '')
                 else:
                     tweetDict[jsonKey] = tweet[jsonKey]
         
         print json.dumps(tweetDict, indent = 4)
+ 
         return tweetDict

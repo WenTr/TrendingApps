@@ -1,6 +1,7 @@
 from TA_GP import GooglePlay
 from youtube import Youtube
 from twitterDataAcquisition import TwitterDataAcquisition
+#from twitterScreenScrape import TwitterScreenScrape
 import json
 
 def youtube_vid_info(apps):   
@@ -24,7 +25,8 @@ def google_app_info():
     return app_list
     
 def twitter_info(app_list):
-    twitter = TwitterDataAcquisition(app_list)
+    #twitter = TwitterDataAcquisition(app_list)
+    twitter = TwitterScreenScrape(appList)
     return twitter
   
 def main():
