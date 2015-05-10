@@ -18,14 +18,12 @@ try:
 except pymongo.errors.ConnectionFailure, e:
     print "Error During Connection"
 
-conn
-
 db = conn['test']
 
-#gp = GooglePlay()
-#gpInfo = gp.getGPInfo()
+gp = GooglePlay()
+gpInfo = gp.getGPInfo()
 
-#db.googleplay.insert(gpInfo)
+db.googleplay.insert(gpInfo)
 
 print conn.database_names()
 print db.collection_names()
