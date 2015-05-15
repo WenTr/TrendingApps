@@ -21,6 +21,7 @@ http://stackoverflow.com/questions/1024847/add-key-to-a-dictionary-in-python
 http://www.crummy.com/software/BeautifulSoup/bs4/doc/
 https://docs.python.org/2/library/uuid.html
 https://github.com/behackett/presentations/blob/master/pycon_2012/Lesson%201.1:%20Getting%20Started.ipynb
+http://stackoverflow.com/questions/12309269/write-json-data-to-file-in-python
 '''
 
 import requests
@@ -46,7 +47,9 @@ class GooglePlay:
         #top 10 apps
         for x in range(0, 10):
             titles.append(links[x].get('title').encode('ascii', 'ignore'))
-            appInfo[(links[x].get('title').encode('ascii', 'ignore'))] = {'AppLink':'https://play.google.com/'+links[x].get('href'), 'Rank':links[x].text.split()[0].replace('.', '')}
+            #print links[x].text.split()[0].replace('.', '')            
+            #appInfo[(links[x].get('title').encode('ascii', 'ignore'))] = {'AppLink':'https://play.google.com/'+links[x].get('href'), 'Rank':links[x].text.split()[0].replace('.', '')}
+            appInfo[links[x].text.split()[0].replace('.', '')] = {'title':links[x].get('title').encode('ascii', 'ignore'), 'appLink':'https://play.google.com/'+links[x].get('href')}
         return (titles, appInfo)
         
     def getCompanies(self, aC):
@@ -83,11 +86,11 @@ class GooglePlay:
 
         singleReviews = aC.findAll('div', {'class': 'single-review'})
         for eachReview in singleReviews:
-            reviewInfo['User'] = eachReview.find('span', {'class': 'author-name'}).text
-            reviewInfo['Date'] = eachReview.find('span', {'class': 'review-date'}).text
-            reviewInfo['Rating'] = eachReview.find('div', {'class': 'tiny-star star-rating-non-editable-container'})['aria-label']
-            reviewInfo['Title'] = eachReview.find('span', {'class': 'review-title'}).text
-            reviewInfo['Comment'] = eachReview.find('span', {'class': 'review-title'}).next_sibling
+            reviewInfo['user'] = eachReview.find('span', {'class': 'author-name'}).text
+            reviewInfo['date'] = eachReview.find('span', {'class': 'review-date'}).text
+            reviewInfo['rating'] = eachReview.find('div', {'class': 'tiny-star star-rating-non-editable-container'})['aria-label']
+            reviewInfo['title'] = eachReview.find('span', {'class': 'review-title'}).text
+            reviewInfo['comment'] = eachReview.find('span', {'class': 'review-title'}).next_sibling
             #print reviewInfo
             reviewDict[str(uuid.uuid4())] = reviewInfo
             reviewInfo = {}
@@ -123,17 +126,21 @@ class GooglePlay:
         appContent = self.visitWebPage(appURL)
         aC = BeautifulSoup(appContent.content)  
         
-        allAppInfo[appKey]['Company'] = self.getCompanies(aC)
-        allAppInfo[appKey]['Genre'] = self.getGenre(aC)
-        allAppInfo[appKey]['StarRating'] = self.getStarRating(aC)
-        allAppInfo[appKey]['NumOfReviewers'] = self.getNumOfReviewers(aC)
-        allAppInfo[appKey]['LastUpdated'] = self.getLastUpdated(aC)
-        allAppInfo[appKey]['NumOfInstalls'] = self.getNumOfInstalls(aC)
-        allAppInfo[appKey]['AndroidOSReq'] = self.getAndrOSReq(aC)
-        allAppInfo[appKey]['ContentRating'] = self.getContentRating(aC)
-        allAppInfo[appKey]['InAppPurchases'] = self.getInAppPurch(aC)
-        allAppInfo[appKey]['Reviews'] = self.getReviews(aC)
+        allAppInfo[appKey]['company'] = self.getCompanies(aC)
+        allAppInfo[appKey]['genre'] = self.getGenre(aC)
+        allAppInfo[appKey]['starRating'] = self.getStarRating(aC)
+        allAppInfo[appKey]['numOfReviewers'] = self.getNumOfReviewers(aC)
+        allAppInfo[appKey]['lastUpdated'] = self.getLastUpdated(aC)
+        allAppInfo[appKey]['numOfInstalls'] = self.getNumOfInstalls(aC)
+        allAppInfo[appKey]['androidOSReq'] = self.getAndrOSReq(aC)
+        allAppInfo[appKey]['contentRating'] = self.getContentRating(aC)
+        allAppInfo[appKey]['inAppPurchases'] = self.getInAppPurch(aC)
+        allAppInfo[appKey]['reviews'] = self.getReviews(aC)
         return allAppInfo
+        
+    def printToJson(self, gpDict):
+        with open('gp.txt', 'w') as outfile:
+            json.dump(gpDict, outfile)
     
     def getGPInfo(self):
         urlPage = 'https://play.google.com/store/apps/collection/topselling_free?hl=en'
@@ -155,13 +162,14 @@ class GooglePlay:
         
         #loops through all the apps to get app Info
         for appKey in allAppInfo.keys():
-            allAppInfo = self.getAppInfo(appKey, allAppInfo[appKey]['AppLink'], allAppInfo)
+            allAppInfo = self.getAppInfo(appKey, allAppInfo[appKey]['appLink'], allAppInfo)
             
         #################################
         #########Test Value##############
         #allAppInfo = self.getAppInfo('Criminal Case', allAppInfo['Criminal Case']['AppLink'], allAppInfo)
         #################################
     
-        topApps['GooglePlay'] = allAppInfo
+        topApps['googlePlay'] = allAppInfo
+        #self.printToJson(topApps)
         #print json.dumps(topApps, indent=4)
         return topApps
