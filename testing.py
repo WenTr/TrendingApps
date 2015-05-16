@@ -23,8 +23,11 @@ db = conn['test']
 '''
 gp = GooglePlay()
 gpInfo = gp.getGPInfo()
+appTitles = gpInfo[0]
+appInfo = gpInfo[1]
+
 '''
-db.googleplay.insert(gpInfo)
+db.googleplay.insert(appInfo)
 
 print conn.database_names()
 print db.collection_names()
