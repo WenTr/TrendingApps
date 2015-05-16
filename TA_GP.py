@@ -175,7 +175,7 @@ class GooglePlay:
         #allAppInfo = self.getAppInfo('Criminal Case', allAppInfo['Criminal Case']['AppLink'], allAppInfo)
         #################################
     
-        topApps['googlePlay'] = allAppInfo
-        self.printToJson(topApps)
+        #topApps['googlePlay'] = allAppInfo
+        #self.printToJson(topApps)
         #print json.dumps(topApps, indent=4)
-        return (appTitles, topApps)
+        return (appTitles, allAppInfo)

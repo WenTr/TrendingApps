@@ -11,6 +11,7 @@ http://stackoverflow.com/questions/9822575/how-to-check-in-pymongo-if-collection
 from TA_GP import GooglePlay
 import pymongo
 import json
+import pprint
 
 
 try:
@@ -20,6 +21,7 @@ except pymongo.errors.ConnectionFailure, e:
     print "Error During Connection"
 
 db = conn['test2']
+
 
 gp = GooglePlay()
 gpInfo = gp.getGPInfo()
@@ -32,4 +34,8 @@ db.googleplay.insert(appInfo)
 print conn.database_names()
 print db.collection_names()
 
-print db.googleplay.find()[0]
+a = db.googleplay.find_one()
+for b in a:   
+    print b
+#print pprint(a)
+#print json.dumps(a, indent = 4)
