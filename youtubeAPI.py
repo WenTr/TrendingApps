@@ -60,30 +60,30 @@ class YoutubeAPI:
             comment_list.append(comment['snippet']['topLevelComment']['snippet']['textDisplay'])
         
         for x in range(len(comment_list)):
-            comment_dict['comment' + str(x)] = comment_list[x]
+            comment_dict['comment_' + str(x)] = comment_list[x]
     
         return comment_dict
 
   
     def get_all_info(self, apps_list):
         video_id = ''
-        youtube_vid_dict = {}
-    
+        youtube_vid_dict = []
         for app in range(len(apps_list)): 
             video_id_list = self.get_video_id_list(apps_list[app])        
-        
+            
             video_dict = {}
-        
-            for video_id in range(len(video_id_list)-15):
-                url_comments = 'https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=5&videoId=' + video_id_list[video_id] + '&key=' + self.api_key
+            video_dict['appName'] = apps_list[app]
+            
+            for video_id in range(len(video_id_list)):
+                url_comments = 'https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=20&videoId=' + video_id_list[video_id] + '&key=' + self.api_key
                 url_video = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2C+statistics&id=' + video_id_list[video_id] + '&key=' + self.api_key
             
                 video_info = self.get_vid_info(url_video)
                 vid_comments = self.get_comments(url_comments)
                 video_info['comments'] = vid_comments
-                video_dict['video' + str(video_id)] = video_info
+                video_dict['video_' + str(video_id)] = video_info
         
-            youtube_vid_dict[apps_list[app]] = video_dict
-        youtube_dict = {'youtube' : youtube_vid_dict} 
-    
-        return youtube_dict       
+            youtube_vid_dict.append(video_dict)
+        #youtube_dict = {'youtube' : youtube_vid_dict} 
+            
+        return youtube_vid_dict       
