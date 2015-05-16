@@ -12,25 +12,24 @@ from TA_GP import GooglePlay
 import pymongo
 import json
 
-'''
+
 try:
     conn = pymongo.MongoClient()
     print "Successful Connection"
 except pymongo.errors.ConnectionFailure, e:
     print "Error During Connection"
 
-db = conn['test']
-'''
+db = conn['test2']
+
 gp = GooglePlay()
 gpInfo = gp.getGPInfo()
 appTitles = gpInfo[0]
 appInfo = gpInfo[1]
 
-'''
+
 db.googleplay.insert(appInfo)
 
 print conn.database_names()
 print db.collection_names()
 
 print db.googleplay.find()[0]
-'''
