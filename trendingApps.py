@@ -38,8 +38,8 @@ def main():
     tcollec = db['twitter']
     gcollec = db['googleplay']
     
-    for (ykey, yvalue) in yt['youtube'].items():
-        ycollec.insert( {ykey:yvalue} )
+    for docu in yt:
+        ycollec.insert(docu)
     
     for (tkey, tvalue) in tw['twitter'].items():
         tcollec.insert( {tkey:tvalue} )
