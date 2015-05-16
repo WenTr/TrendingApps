@@ -22,12 +22,15 @@ http://www.crummy.com/software/BeautifulSoup/bs4/doc/
 https://docs.python.org/2/library/uuid.html
 https://github.com/behackett/presentations/blob/master/pycon_2012/Lesson%201.1:%20Getting%20Started.ipynb
 http://stackoverflow.com/questions/12309269/write-json-data-to-file-in-python
+http://stackoverflow.com/questions/4254039/how-to-retrieve-a-value-from-mongodb-by-its-key-name
+http://stackoverflow.com/questions/7431422/find-in-dictionary-by-value-in-mongo
+http://stackoverflow.com/questions/17360423/getting-a-dictionary-inside-a-list-by-key-in-mongodb-mongoengine
 '''
 
 import requests
 #import pprint
 import json
-import uuid
+#import uuid
 from bs4 import BeautifulSoup
 
 class GooglePlay:
@@ -83,7 +86,8 @@ class GooglePlay:
     def getReviews(self, aC):
         reviewDict = {}      
         reviewInfo = {}        
-
+        counter = 0
+            
         singleReviews = aC.findAll('div', {'class': 'single-review'})
         for eachReview in singleReviews:
             reviewInfo['user'] = eachReview.find('span', {'class': 'author-name'}).text
@@ -92,9 +96,11 @@ class GooglePlay:
             reviewInfo['title'] = eachReview.find('span', {'class': 'review-title'}).text
             reviewInfo['comment'] = eachReview.find('span', {'class': 'review-title'}).next_sibling
             #print reviewInfo
-            reviewDict[str(uuid.uuid4())] = reviewInfo
+            reviewDict['review_'+str(counter)] = reviewInfo
             reviewInfo = {}
+            counter += 1
         #print json.dumps(reviewDict, indent=4)
+        counter = 0
         return reviewDict
     
     def getLastUpdated(self, aC):
@@ -170,6 +176,6 @@ class GooglePlay:
         #################################
     
         topApps['googlePlay'] = allAppInfo
-        #self.printToJson(topApps)
+        self.printToJson(topApps)
         #print json.dumps(topApps, indent=4)
         return (appTitles, topApps)
