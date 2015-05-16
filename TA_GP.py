@@ -172,4 +172,4 @@ class GooglePlay:
         topApps['googlePlay'] = allAppInfo
         #self.printToJson(topApps)
         #print json.dumps(topApps, indent=4)
-        return topApps
+        return (appTitles, topApps)

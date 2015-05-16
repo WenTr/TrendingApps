@@ -44,7 +44,7 @@ def main():
     for (tkey, tvalue) in tw['twitter'].items():
         tcollec.insert( {tkey:tvalue} )
     
-    for (gkey, gvalue) in gpInfo['GooglePlay'].items():
+    for (gkey, gvalue) in gpInfo['googlePlay'].items():
         gcollec.insert( {gkey:gvalue} )
     
     print db.youtube.find_one()
