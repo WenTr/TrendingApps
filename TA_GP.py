@@ -176,6 +176,6 @@ class GooglePlay:
         #################################
     
         topApps['googlePlay'] = allAppInfo
-        self.printToJson(topApps)
+        #self.printToJson(topApps)
         #print json.dumps(topApps, indent=4)
         return (appTitles, topApps)
