@@ -28,23 +28,25 @@ def main():
         print "Error During Connection"    
     
     db = conn['trendingapps']
-    
-#    apps, gpInfo = google_app_info()   
-#    yt = youtube_vid_info(apps)
-#    tw = twitter_info(apps)
-    
+	
+    '''
+    apps, gpInfo = google_app_info()   
+    yt = youtube_vid_info(apps)
+    tw = twitter_info(apps)
+    '''
     ycollec = db['youtube']
     tcollec = db['twitter']
     gcollec = db['googleplay']
+    '''
+    for docu in yt:
+        ycollec.insert(docu)
     
-#    for docu in yt:
-#        ycollec.insert(docu)
-#    
-#    for (tkey, tvalue) in tw['twitter'].items():
-#        tcollec.insert( {tkey:tvalue} )
-#    
-#    for (gkey, gvalue) in gpInfo['googlePlay'].items():
-#        gcollec.insert( {gkey:gvalue} )
+    for (tkey, tvalue) in tw['twitter'].items():
+        tcollec.insert( {tkey:tvalue} )
+    
+    for (gkey, gvalue) in gpInfo['googlePlay'].items():
+        gcollec.insert( {gkey:gvalue} )
+    '''
     
 #    print db.youtube.find_one()
 #    print
