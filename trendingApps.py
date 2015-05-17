@@ -59,13 +59,17 @@ def main():
     for a in query:
         print a
 
-#    for num in range(1, 11):
-#        print dumps(db.googleplay.find({}, {str(num) + '.title': 1, '_id': 0})[0], indent = 4)
-#        
-#    twitterTest = db.twitter.find({}, {'Facebook.tweet_1': 1, '_id': 0})
-#    
-#    for info in twitterTest:
-#        print dumps(info, indent = 4)
-
+    for num in range(1, 11):
+        appDict = db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
+        
+        for appTitle in appDict.keys():
+            appName = appDict[appTitle]['title']
+            
+            for num2 in range(1, 6):
+                tweetInfo = db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
+                
+                for info in tweetInfo:
+                    print dumps(info, indent = 4)
+                    
 if __name__ == "__main__":
     main()
