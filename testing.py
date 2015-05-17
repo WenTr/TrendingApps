@@ -22,20 +22,22 @@ except pymongo.errors.ConnectionFailure, e:
 
 db = conn['test2']
 
-
+'''
 gp = GooglePlay()
 gpInfo = gp.getGPInfo()
 appTitles = gpInfo[0]
 appInfo = gpInfo[1]
 
-
 db.googleplay.insert(appInfo)
+'''
 
-print conn.database_names()
-print db.collection_names()
+#print conn.database_names()
+#print db.collection_names()
+#print db.googleplay.find_one()
 
-a = db.googleplay.find_one()
-for b in a:   
-    print b
+for num in range(1, 11):
+    print json.dumps(db.googleplay.find({}, {str(num)+'.title':1, '_id':0})[0], indent=4)
+
+
 #print pprint(a)
 #print json.dumps(a, indent = 4)
