@@ -1,9 +1,8 @@
-
 from TA_GP import GooglePlay
 from youtubeAPI import YoutubeAPI
 #from twitterDataAcquisition import TwitterDataAcquisition
 from twitterScreenScrape import TwitterScreenScrape
-import json
+from json import dumps
 import pymongo
 
 def youtube_vid_info(apps):   
@@ -30,28 +29,41 @@ def main():
     
     db = conn['trendingapps']
     
-    apps, gpInfo = google_app_info()   
-    yt = youtube_vid_info(apps)
-    tw = twitter_info(apps)
+#    apps, gpInfo = google_app_info()   
+#    yt = youtube_vid_info(apps)
+#    tw = twitter_info(apps)
     
     ycollec = db['youtube']
     tcollec = db['twitter']
     gcollec = db['googleplay']
     
-    for docu in yt:
-        ycollec.insert(docu)
+#    for docu in yt:
+#        ycollec.insert(docu)
+#    
+#    for (tkey, tvalue) in tw['twitter'].items():
+#        tcollec.insert( {tkey:tvalue} )
+#    
+#    for (gkey, gvalue) in gpInfo['googlePlay'].items():
+#        gcollec.insert( {gkey:gvalue} )
     
-    for (tkey, tvalue) in tw['twitter'].items():
-        tcollec.insert( {tkey:tvalue} )
-    
-    for (gkey, gvalue) in gpInfo['googlePlay'].items():
-        gcollec.insert( {gkey:gvalue} )
-    
-    print db.youtube.find_one()
-    print
-    print db.twitter.find_one()
-    print
-    print db.googleplay.find_one()
-    
+#    print db.youtube.find_one()
+#    print
+#    print db.twitter.find_one()
+#    print
+#    print db.googleplay.find_one()
+
+    query = ycollec.find({'appName': {'$exists': True}}, {'video_0.likes': 1, '_id': 0})
+
+    for a in query:
+        print a
+
+#    for num in range(1, 11):
+#        print dumps(db.googleplay.find({}, {str(num) + '.title': 1, '_id': 0})[0], indent = 4)
+#        
+#    twitterTest = db.twitter.find({}, {'Facebook.tweet_1': 1, '_id': 0})
+#    
+#    for info in twitterTest:
+#        print dumps(info, indent = 4)
+
 if __name__ == "__main__":
     main()
