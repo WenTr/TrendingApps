@@ -56,8 +56,6 @@ def main():
 
     query = ycollec.find({'appName': {'$exists': True}}, {'video_0.likes': 1, '_id': 0})
 
-    for a in query:
-        print a
 
     for num in range(1, 11):
         appDict = db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
@@ -70,6 +68,12 @@ def main():
                 
                 for info in tweetInfo:
                     print dumps(info, indent = 4)
-                    
+                          
+            query = ycollec.find({'appName': appName}, {"_id": 0})
+                
+            for vid in query:
+                    print dumps(vid, indent = 4)
+
+
 if __name__ == "__main__":
     main()
