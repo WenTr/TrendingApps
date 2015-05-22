@@ -5,6 +5,12 @@ from twitterScreenScrape import TwitterScreenScrape
 from json import dumps
 import pymongo
 
+conn = pymongo.MongoClient()
+db = conn['trendingapps']
+ycollec = db['youtube']
+tcollec = db['twitter']
+gcollec = db['googleplay']
+    
 def youtube_vid_info(apps):   
     youtube = YoutubeAPI()
     vid_dict = youtube.get_all_info(apps)
@@ -19,25 +25,12 @@ def twitter_info(app_list):
     #twitter = TwitterDataAcquisition(app_list)
     twitter = TwitterScreenScrape()
     return twitter.get_twitter_data(app_list)
-  
-def main():    
-    try:
-        conn = pymongo.MongoClient()
-        print "Successful Connection"
-    except pymongo.errors.ConnectionFailure, e:
-        print "Error During Connection"    
-    
-    db = conn['trendingapps']
-	
-    '''
+
+def insert_DB():
     apps, gpInfo = google_app_info()   
     yt = youtube_vid_info(apps)
     tw = twitter_info(apps)
-    '''
-    ycollec = db['youtube']
-    tcollec = db['twitter']
-    gcollec = db['googleplay']
-    '''
+    
     for docu in yt:
         ycollec.insert(docu)
     
@@ -46,17 +39,8 @@ def main():
     
     for (gkey, gvalue) in gpInfo['googlePlay'].items():
         gcollec.insert( {gkey:gvalue} )
-    '''
     
-#    print db.youtube.find_one()
-#    print
-#    print db.twitter.find_one()
-#    print
-#    print db.googleplay.find_one()
-
-    query = ycollec.find({'appName': {'$exists': True}}, {'video_0.likes': 1, '_id': 0})
-
-
+def find_DB():
     for num in range(1, 11):
         appDict = db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
         
@@ -69,11 +53,16 @@ def main():
                 for info in tweetInfo:
                     print dumps(info, indent = 4)
                           
-            query = ycollec.find({'appName': appName}, {"_id": 0})
+            query = ycollec.find({'appName': appName}, {"appName": 1, "video_0" : 1, "video_1" : 1, 
+                                 "_id" : 0})
                 
-            for vid in query:
-                    print dumps(vid, indent = 4)
-
-
+            for app in query:
+                    print dumps(app, indent = 4)     
+        
+def main():             
+    query = ycollec.find({"appName": "Criminal Case"})
+    for find in query:
+        print find
+        
 if __name__ == "__main__":
     main()
