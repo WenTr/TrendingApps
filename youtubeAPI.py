@@ -13,15 +13,22 @@ class YoutubeAPI:
             apps_name_change.replace(' ', '+')
             
         search_link = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app' 
-        r = requests.get(search_link)    
+        search_link2 = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app&page=2'        
+        r = requests.get(search_link)
+        r2 = requests.get(search_link2)
         soup = BeautifulSoup(r.content)    
-
+        soup2 = BeautifulSoup(r2.content)
+        
         h = soup.find_all('a', {'rel': 'spf-prefetch'})
+        h2 = soup2.find_all('a', {'rel': 'spf-prefetch'})
         vid_id_list = []
     
         for i in h:
             vid_id_list.append(i.get('href'))
-    
+        
+        for j in h2:
+            vid_id_list.append(j.get('href'))
+            
         for video in range(len(vid_id_list)):
             actual_id = vid_id_list[video]
             vid_id_list[video] = actual_id[9:]
@@ -40,7 +47,8 @@ class YoutubeAPI:
             info_dict['views'] = vid_info['statistics']['viewCount']
             info_dict['likes'] = vid_info['statistics']['likeCount']
             info_dict['dislikes'] = vid_info['statistics']['dislikeCount']
-                
+            info_dict['comment_count'] = vid_info['statistics']['commentCount']    
+            
             upload_date = vid_info['snippet']['publishedAt']
             info_dict['uploadDate'] = upload_date[0:10]
         
@@ -85,5 +93,5 @@ class YoutubeAPI:
         
             youtube_vid_dict.append(video_dict)
         #youtube_dict = {'youtube' : youtube_vid_dict} 
-            
+
         return youtube_vid_dict       
