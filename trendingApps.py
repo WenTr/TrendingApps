@@ -60,9 +60,7 @@ def find_DB():
                     print dumps(app, indent = 4)     
         
 def main():             
-    query = ycollec.find({"appName": "Criminal Case"})
-    for find in query:
-        print find
+    find_DB()
         
 if __name__ == "__main__":
     main()
