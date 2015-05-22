@@ -1,5 +1,5 @@
 '''
-sources: 
+souurces: 
 Beautiful Soup 4 Documentation: http://www.crummy.com/software/BeautifulSoup/
 Screen Scraping Tutorial: https://www.youtube.com/watch?v=3xQTJi2tqgk
 Python Documentation: https://docs.python.org/2/
