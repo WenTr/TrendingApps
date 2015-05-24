@@ -21,6 +21,8 @@ class TwitterStats():
         stat_dict['median'] = self.get_median()
         stat_dict['mode'] = self.get_mode()
         stat_dict['standard_deviation'] = self.get_SD()
+        
+        return stat_dict
     
     def get_mean(self):
         mean_dict = {}
