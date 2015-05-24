@@ -63,8 +63,7 @@ def get_stats():
     pass
 
 def main():             
-    #find_DB()
-    
+    insert_DB()
         
 if __name__ == "__main__":
     main()
