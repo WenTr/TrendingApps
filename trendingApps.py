@@ -57,7 +57,7 @@ def find_DB():
                                  "_id" : 0})
                 
             for app in query:
-                    print dumps(app, indent = 4)     
+                    print dumps(app, indent = 4) 
         
 def main():             
     find_DB()
