@@ -1,7 +1,9 @@
 from TA_GP import GooglePlay
 from youtubeAPI import YoutubeAPI
-#from twitterDataAcquisition import TwitterDataAcquisition
 from twitterScreenScrape import TwitterScreenScrape
+from googleplayStats import GooglePlayStats
+from twitterStats import TwitterStats
+from youtubeStats import YoutubeStats
 from json import dumps
 import pymongo
 
@@ -60,11 +62,23 @@ def find_DB():
                     print dumps(app, indent = 4) 
         
 def get_stats():
-    pass
+    gp = GooglePlayStats()
+    t = TwitterStats()
+    yt = YoutubeStats()
+    
+    print 'GooglePlay'
+    print dumps(gp.getReviewRatings(), indent = 4)
+    print
+    print 'Twitter'
+    print dumps(t.get_twitter_stats(), indent = 4)
+    print
+    print 'YouTube'
+    print dumps(yt.stats(), indent = 4)
 
 def main():             
     #find_DB()
-    
+    #insert_DB()
+    get_stats()
         
 if __name__ == "__main__":
     main()
