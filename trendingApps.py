@@ -59,8 +59,12 @@ def find_DB():
             for app in query:
                     print dumps(app, indent = 4)     
         
+def get_stats():
+    pass
+
 def main():             
-    insert_DB()
+    #find_DB()
+    
         
 if __name__ == "__main__":
     main()
