@@ -12,12 +12,6 @@ import re
 from json import dumps
 
 class TwitterScreenScrape:
-    
-    consumer_key = ''
-    consumer_secret = ''
-    
-    access_token = ''
-    access_secret = ''
         
     def __init__(self):
         pass
@@ -27,6 +21,8 @@ class TwitterScreenScrape:
         app_dict = {}
         
         for app in app_list:
+            app_dict = {}
+            
             tweet_dict = self.search_tweet(app)
             app_dict[app] = tweet_dict
             
@@ -45,6 +41,8 @@ class TwitterScreenScrape:
         for tweet in b_soup.find_all('div', {'data-follows-you': 'false'}):
         #for tweet in b_soup.find_all('div', {'class': 'tweet'}):
             if tweet:
+                info_dict = {}
+                
                 date = tweet.find('a', {'class': 'tweet-timestamp js-permalink js-nav js-tooltip'})
                 info_dict['created_at'] = re.findall('\d\s\w\w\w\s\d\d\d\d', str(date.get('title')))[0] if date else ''
                     
