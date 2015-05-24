@@ -21,28 +21,27 @@ class TwitterScreenScrape:
         app_dict = {}
         
         for app in app_list:
-            app_dict = {}
-            
             tweet_dict = self.search_tweet(app)
             app_dict[app] = tweet_dict
             
         twitter_dict['twitter'] = app_dict
         
+        print twitter_dict['twitter']
+        
         return twitter_dict 
     
     def search_tweet(self, app_name):
         tweet_dict = {}
-        info_dict = {}
-        tweet_ID = 0   
+        tweet_ID = 0
         #url_file = requests.get('https://twitter.com/search?f=realtime&q=' + str.lower(app) + '%20app&src=typd')
-        url_file = requests.get('https://twitter.com/search?q=' + str.lower(app_name) + '%20app&src=typd')
+        url_file = requests.get('https://twitter.com/search?q=' + str.lower(app_name) + '%20app&result_type=popular')
         b_soup = BeautifulSoup(url_file.content)
             
         for tweet in b_soup.find_all('div', {'data-follows-you': 'false'}):
         #for tweet in b_soup.find_all('div', {'class': 'tweet'}):
-            if tweet:
-                info_dict = {}
-                
+            info_dict = {}
+            
+            if tweet:                
                 date = tweet.find('a', {'class': 'tweet-timestamp js-permalink js-nav js-tooltip'})
                 info_dict['created_at'] = re.findall('\d\s\w\w\w\s\d\d\d\d', str(date.get('title')))[0] if date else ''
                     

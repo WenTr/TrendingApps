@@ -60,7 +60,7 @@ def find_DB():
                     print dumps(app, indent = 4)     
         
 def main():             
-    find_DB()
+    insert_DB()
         
 if __name__ == "__main__":
     main()
