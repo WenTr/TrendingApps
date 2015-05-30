@@ -14,13 +14,28 @@ class YoutubeAPI:
             
         search_link = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app' 
         search_link2 = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app&page=2'        
+        search_link3 = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app&page=3'
+        search_link4 = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app&page=4'
+        search_link5 = 'https://www.youtube.com/results?search_query=' + apps_name_change +'+app&page=5'        
+        
         r = requests.get(search_link)
         r2 = requests.get(search_link2)
+        r3 = requests.get(search_link3)
+        r4 = requests.get(search_link4)
+        r5 = requests.get(search_link5)
+
         soup = BeautifulSoup(r.content)    
         soup2 = BeautifulSoup(r2.content)
-        
+        soup3 = BeautifulSoup(r3.content)    
+        soup4 = BeautifulSoup(r4.content)
+        soup5 = BeautifulSoup(r5.content)    
+    
         h = soup.find_all('a', {'rel': 'spf-prefetch'})
         h2 = soup2.find_all('a', {'rel': 'spf-prefetch'})
+        h3 = soup3.find_all('a', {'rel': 'spf-prefetch'})
+        h4 = soup4.find_all('a', {'rel': 'spf-prefetch'})
+        h5 = soup5.find_all('a', {'rel': 'spf-prefetch'})
+        
         vid_id_list = []
     
         for i in h:
@@ -28,7 +43,17 @@ class YoutubeAPI:
         
         for j in h2:
             vid_id_list.append(j.get('href'))
-            
+        
+        for k in h3:
+            vid_id_list.append(k.get('href'))
+        
+        for L in h4:
+            vid_id_list.append(L.get('href'))        
+        
+        for m in h5:
+            vid_id_list.append(m.get('href'))
+                
+        
         for video in range(len(vid_id_list)):
             actual_id = vid_id_list[video]
             vid_id_list[video] = actual_id[9:]
@@ -51,19 +76,21 @@ class YoutubeAPI:
             
             upload_date = vid_info['snippet']['publishedAt']
             info_dict['uploadDate'] = upload_date[0:10]
-        
-            #info_dict['description'] = vid_info['snippet']['description']
     
         return info_dict
 
     def get_comments(self, url_comments):
-        response = urllib2.urlopen(url_comments)
-
-        comments = json.load(response)
-
         comment_list = []
         comment_dict = {}
-    
+        
+        try:        
+            response = urllib2.urlopen(url_comments)
+        except urllib2.HTTPError, e:
+            print 'HTTPError:', e.code            
+            return comment_dict
+            
+        comments = json.load(response)
+        
         for comment in comments['items']:
             comment_list.append(comment['snippet']['topLevelComment']['snippet']['textDisplay'])
         
@@ -81,17 +108,19 @@ class YoutubeAPI:
             
             video_dict = {}
             video_dict['appName'] = apps_list[app]
+            print apps_list[app]
             
             for video_id in range(len(video_id_list)):
-                url_comments = 'https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=20&videoId=' + video_id_list[video_id] + '&key=' + self.api_key
+                url_comments = 'https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId=' + video_id_list[video_id] + '&key=' + self.api_key
                 url_video = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2C+statistics&id=' + video_id_list[video_id] + '&key=' + self.api_key
-            
-                video_info = self.get_vid_info(url_video)
+                
+                print video_id_list[video_id]
+                
                 vid_comments = self.get_comments(url_comments)
+                video_info = self.get_vid_info(url_video)
                 video_info['comments'] = vid_comments
                 video_dict['video_' + str(video_id)] = video_info
         
             youtube_vid_dict.append(video_dict)
-        #youtube_dict = {'youtube' : youtube_vid_dict} 
 
         return youtube_vid_dict       
