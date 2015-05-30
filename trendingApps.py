@@ -75,6 +75,8 @@ def get_stats():
     print 'YouTube'
     print dumps(yt.stats(), indent = 4)
 
+    
+
 def main():             
     #find_DB()
     #insert_DB()

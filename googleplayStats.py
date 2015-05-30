@@ -7,11 +7,13 @@ Created on Sat May 23 16:39:32 2015
 '''
 Sources:
 http://stackoverflow.com/questions/252703/python-append-vs-extend
+http://docs.scipy.org/doc/numpy/reference/generated/numpy.std.html
 '''
 from collections import Counter
 import pymongo
 import re
 import math
+import numpy as np
 #import json
 
 conn = pymongo.MongoClient()
@@ -26,13 +28,15 @@ class GooglePlayStats:
     def getMean(self, appRatings):
         for (appName, ratingList) in appRatings.items():
             #print appName
-            appMean = ( 1.0*sum(ratingList) )/len(ratingList)
+            #appMean = ( 1.0*sum(ratingList) )/len(ratingList)
+            appMean = np.mean(ratingList)
             return round(appMean, 1)
             
     def getMedian(self, appRatings):
         for (appName, ratingList) in appRatings.items():
-            mid = len(ratingList)/2
-            return (1.0*( ratingList[mid] + ratingList[mid-1] ))/2
+            #mid = len(ratingList)/2
+            #return (1.0*( ratingList[mid] + ratingList[mid-1] ))/2
+            return np.median(ratingList)            
             
     def getMode(self, appRatings):
         for (appName, ratingList) in appRatings.items():
@@ -40,17 +44,19 @@ class GooglePlayStats:
     
     def getStDev(self, appRatings):
         for (appName, ratingList) in appRatings.items():
-            #numerator
-            squaredList = [r**2 for r in ratingList]
-            sumSquaredList = sum(squaredList)
-            x = len(ratingList)*sumSquaredList - sum(ratingList)**2
-    
-            #denominator
-            d = len(ratingList)*( len(ratingList)-1 )
-            
-            variance = (1.0*x)/d
-            sD = round(math.sqrt(variance), 1)
+#            #numerator
+#            squaredList = [r**2 for r in ratingList]
+#            sumSquaredList = sum(squaredList)
+#            x = len(ratingList)*sumSquaredList - sum(ratingList)**2
+#    
+#            #denominator
+#            d = len(ratingList)*( len(ratingList)-1 )
+#            
+#            variance = (1.0*x)/d
+#            sD = round(math.sqrt(variance), 1)
+            sD = np.std(ratingList)
             return sD
+
         
     def getReviewRatings(self):
         appRatings = {}
