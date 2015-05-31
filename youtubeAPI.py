@@ -85,8 +85,7 @@ class YoutubeAPI:
         
         try:        
             response = urllib2.urlopen(url_comments)
-        except urllib2.HTTPError, e:
-            print 'HTTPError:', e.code            
+        except urllib2.HTTPError, e:            
             return comment_dict
             
         comments = json.load(response)
@@ -108,13 +107,10 @@ class YoutubeAPI:
             
             video_dict = {}
             video_dict['appName'] = apps_list[app]
-            print apps_list[app]
             
             for video_id in range(len(video_id_list)):
                 url_comments = 'https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&maxResults=50&videoId=' + video_id_list[video_id] + '&key=' + self.api_key
                 url_video = 'https://www.googleapis.com/youtube/v3/videos?part=snippet%2C+statistics&id=' + video_id_list[video_id] + '&key=' + self.api_key
-                
-                print video_id_list[video_id]
                 
                 vid_comments = self.get_comments(url_comments)
                 video_info = self.get_vid_info(url_video)

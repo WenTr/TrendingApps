@@ -12,7 +12,10 @@ db = conn['trendingapps']
 ycollec = db['youtube']
 tcollec = db['twitter']
 gcollec = db['googleplay']
-    
+y_stats_collec = db['youtube_stats']
+gp_stats = db['googleplay_stats']
+t_stats = db['twitter_stats']
+
 def youtube_vid_info(apps):   
     youtube = YoutubeAPI()
     vid_dict = youtube.get_all_info(apps)
@@ -59,12 +62,12 @@ def find_DB():
                 
             for app in query:
                     print dumps(app, indent = 4) 
-        
+
 def get_stats():
     gp = GooglePlayStats()
     t = TwitterStats()
     yt = YoutubeStats()
-    '''
+    
     print 'GooglePlay'
     print dumps(gp.getReviewRatings(), indent = 4)
     print
@@ -73,13 +76,10 @@ def get_stats():
     print
     print 'YouTube'
     print dumps(yt.stats(), indent = 4)
-    '''
-    
-    print 'Twitter'
-    print dumps(t.get_twitter_stats(), indent = 4)
+
 def main():             
-    #find_DB()
-    #insert_DB()
+    find_DB()
+    insert_DB()
     get_stats()
         
 if __name__ == "__main__":
