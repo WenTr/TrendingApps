@@ -17,7 +17,6 @@ class YoutubeStats:
             likes_list = []
             views_list = []
             comment_lists = []
-            comments = {}            
             for x in range(len(count)-1):
                 comments_count.append(int(count['video_' + str(x)]['comment_count']))
                 likes_list.append(int(count['video_' + str(x)]['likes']))
@@ -47,7 +46,6 @@ class YoutubeStats:
     def get_stats(self):
         clw_list = self.get_lists()  
         stats_list = []
-        
         for app in clw_list:
             app_stats = {}
             app_stats['appName'] = app['appName']
@@ -78,23 +76,21 @@ class YoutubeStats:
             
             comments_polarity = []
             comments = {}
-            comments_pol = {}
             comment_list = app['comments_sent']
             for comment in comment_list:
                 sent_analysis = TextBlob(comment)    
                 if sent_analysis.sentiment.polarity != 0:
                     comments_polarity.append(sent_analysis.sentiment.polarity)
             
-            for comment in range(len(comment_list)):
-                comments['comment_' + str(comment)] = comment_list[comment]                                
-                
-            for (comment_num, text) in comments.items():
-                sent = TextBlob(text)    
-                if sent_analysis.sentiment.polarity != 0:
-                    comments_pol[comment_num] = sent.sentiment.polarity                    
+            a = 0
+            for comment in comment_list:
+                sent = TextBlob(comment)
+                if sent.sentiment.polarity != 0:                
+                    comments['comment_' + str(a)] = sent.sentiment.polarity
+                a += 1                                
                 
             sent_mean = round(numpy.mean(comments_polarity), 1)        
-            app_stats['sentimental_analysis'] = {'mean': sent_mean, 'comment_polarity': comments_pol}    
+            app_stats['sentimental_analysis'] = {'mean': sent_mean, 'comment_polarity': comments}    
             
             stats_list.append(app_stats)
             
