@@ -12,7 +12,7 @@ db = conn['trendingapps']
 ycollec = db['youtube']
 tcollec = db['twitter']
 gcollec = db['googleplay']
-y_stats_collec = db['youtube_stats']
+y_stats = db['youtube_stats']
 gp_stats = db['googleplay_stats']
 t_stats = db['twitter_stats']
 
@@ -68,19 +68,21 @@ def get_stats():
     t = TwitterStats()
     yt = YoutubeStats()
     
-    print 'GooglePlay'
-    print dumps(gp.getReviewRatings(), indent = 4)
-    print
-    print 'Twitter'
-    print dumps(t.get_twitter_stats(), indent = 4)
-    print
-    print 'YouTube'
-    print dumps(yt.stats(), indent = 4)
-
+    gpl_stats =  gp.getReviewRatings()
+    tw_stats = t.get_twitter_stats()
+    yt_stats = yt.get_stats()
+    
+    gp_stats.insert(gpl_stats)
+    t_stats.insert(tw_stats['twitter'])
+    
+    for document in yt_stats:
+        y_stats.insert(document)
+        
+  
 def main():             
-    find_DB()
+#    find_DB()
     insert_DB()
-    get_stats()
+#   get_stats()
         
 if __name__ == "__main__":
     main()
