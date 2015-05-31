@@ -86,10 +86,10 @@ class YoutubeStats:
             for comment in comment_list:
                 sent = TextBlob(comment)
                 if sent.sentiment.polarity != 0:                
-                    comments['comment_' + str(a)] = sent.sentiment.polarity
+                    comments['comment_' + str(a)] = round(sent.sentiment.polarity, 2)
                 a += 1                                
                 
-            sent_mean = round(numpy.mean(comments_polarity), 1)        
+            sent_mean = round(numpy.mean(comments_polarity), 2)        
             app_stats['sentimental_analysis'] = {'mean': sent_mean, 'comment_polarity': comments}    
             
             stats_list.append(app_stats)
