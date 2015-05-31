@@ -1,6 +1,6 @@
 from TA_GP import GooglePlay
 from youtubeAPI import YoutubeAPI
-from twitterScreenScrape import TwitterScreenScrape
+from twitter_api import Twitter_API
 from googleplayStats import GooglePlayStats
 from twitterStats import TwitterStats
 from youtubeStats import YoutubeStats
@@ -24,9 +24,8 @@ def google_app_info():
     return app_list
     
 def twitter_info(app_list):
-    #twitter = TwitterDataAcquisition(app_list)
-    twitter = TwitterScreenScrape()
-    return twitter.get_twitter_data(app_list)
+    twitter = Twitter_API()
+    return twitter.get_tweets(app_list)
 
 def insert_DB():
     apps, gpInfo = google_app_info()   
@@ -38,10 +37,10 @@ def insert_DB():
     
     for (tkey, tvalue) in tw['twitter'].items():
         tcollec.insert( {tkey:tvalue} )
-    
+
     for (gkey, gvalue) in gpInfo['googlePlay'].items():
         gcollec.insert( {gkey:gvalue} )
-    
+
 def find_DB():
     for num in range(1, 11):
         appDict = db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
@@ -65,7 +64,7 @@ def get_stats():
     gp = GooglePlayStats()
     t = TwitterStats()
     yt = YoutubeStats()
-    
+    '''
     print 'GooglePlay'
     print dumps(gp.getReviewRatings(), indent = 4)
     print
@@ -74,7 +73,10 @@ def get_stats():
     print
     print 'YouTube'
     print dumps(yt.stats(), indent = 4)
-
+    '''
+    
+    print 'Twitter'
+    print dumps(t.get_twitter_stats(), indent = 4)
 def main():             
     #find_DB()
     #insert_DB()

@@ -1,12 +1,12 @@
 '''
-Created on May 23, 2015
+Created on May 30, 2015
 
 @author: Sherry
 '''
 
 import pymongo
+import numpy
 from json import dumps
-from math import sqrt
 
 class TwitterStats():
     conn = pymongo.MongoClient()
@@ -16,229 +16,151 @@ class TwitterStats():
         pass
     
     def get_twitter_stats(self):
+        twitter_stat = {}
         stat_dict = {}
-        stat_dict['mean'] = self.get_mean()
-        stat_dict['median'] = self.get_median()
-        stat_dict['mode'] = self.get_mode()
-        stat_dict['standard_deviation'] = self.get_SD()
-        
-        return stat_dict
-    
-    def get_mean(self):
-        mean_dict = {}
         
         for num in range(1, 11):
-            appDict = self.db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
+            app_dict = self.db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
+            
+            for app_title in app_dict.keys():
+                app_stat_dict = {}
                 
-            for appTitle in appDict.keys():
-                total_retweets = 0;
-                appName = appDict[appTitle]['title']
-    
-                if appName == 'Criminal Case':
-                    for num2 in range(0, 11):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            total_retweets += int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                    
-                    mean_dict[appName] = str(total_retweets/11)
-                elif appName == 'WhatsApp Messenger':
-                    for num2 in range(0, 14):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            total_retweets += int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                    
-                    mean_dict[appName] = str(total_retweets/14)
-                elif appName == 'Super-Bright LED Flashlight':
-                    for num2 in range(0, 12):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            total_retweets += int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                    
-                    mean_dict[appName] = str(total_retweets/12)
-                else:
-                    for num2 in range(0, 18):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            total_retweets += int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                    
-                    mean_dict[appName] = str(total_retweets/18)
-        
-        return mean_dict
-    
-    def get_median(self):
-        median_dict = {}
-        
-        for num in range(1, 11):
-            appDict = self.db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
-                
-            for appTitle in appDict.keys():
-                most_retweet = 0
-                appName = appDict[appTitle]['title']
-    
-                if appName == 'Criminal Case':
-                    median_list = []
-                    for num2 in range(0, 11):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            median_list.append(int(info[appName]['tweet_' + str(num2)]['retweet_count']))
-                            
-                    median_list.sort()
-                    median_dict[appName] = median_list[len(median_list)/2]
-                elif appName == 'WhatsApp Messenger':
-                    median_list = []
-                    for num2 in range(0, 14):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                median_list.append(int(info[appName]['tweet_' + str(num2)]['retweet_count']))
-                            
-                        median_list.sort()
-                        median_dict[appName] = median_list[len(median_list)/2]            
-                elif appName == 'Super-Bright LED Flashlight':
-                    median_list = []
-                    for num2 in range(0, 12):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                median_list.append(int(info[appName]['tweet_' + str(num2)]['retweet_count']))
-                            
-                    median_list.sort()
-                    median_dict[appName] = median_list[len(median_list)/2]
-                else:
-                    median_list = []
-                    for num2 in range(0, 18):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                median_list.append(int(info[appName]['tweet_' + str(num2)]['retweet_count']))
-                            
-                    median_list.sort()
-                    median_dict[appName] = median_list[len(median_list)/2]
-    
-        return median_dict
-    
-    def get_mode(self):
-        mode_dict = {}
-        
-        for num in range(1, 11):
-            appDict = self.db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
-                
-            for appTitle in appDict.keys():
-                most_retweet = 0
-                appName = appDict[appTitle]['title']
-    
-                if appName == 'Criminal Case':
-                    for num2 in range(0, 11):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                most_retweet = retweet
-                            
-                    mode_dict[appName] = most_retweet
-                elif appName == 'WhatsApp Messenger':
-                    for num2 in range(0, 14):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                most_retweet = retweet
+                app_name = app_dict[app_title]['title']
                                 
-                    mode_dict[appName] = most_retweet
-                elif appName == 'Super-Bright LED Flashlight':
-                    for num2 in range(0, 12):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                most_retweet = retweet
-                                
-                    mode_dict[appName] = most_retweet
-                else:
-                    for num2 in range(0, 18):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            
-                            if retweet > most_retweet:
-                                most_retweet = retweet
-                    
-                    mode_dict[appName] = most_retweet
-    
-        return mode_dict
-    
-    def get_SD(self):
-        sd_dict = {}
-        
-        for num in range(1, 11):
-            appDict = self.db.googleplay.find({str(num): {'$exists': 1}}, {str(num) + '.title': 1, '_id': 0})[0]
+                app_stat_dict['retweet_mean'] = self.get_retweet_mean(app_name)
+                app_stat_dict['retweet_median'] = self.get_retweet_median(app_name)
+                app_stat_dict['retweet_mode'] = self.get_retweet_mode(app_name)
+                app_stat_dict['retweet_standard_deviation'] = self.get_retweet_SD(app_name)
                 
-            for appTitle in appDict.keys():
-                sq_retweet = 0
-                total_retweet = 0
+                app_stat_dict['user_mean'] = self.get_user_mean(app_name)
+                app_stat_dict['user_median'] = self.get_user_median(app_name)
+                app_stat_dict['user_mode'] = self.get_user_mode(app_name)
+                app_stat_dict['user_standard_deviation'] = self.get_user_SD(app_name)
                 
-                appName = appDict[appTitle]['title']
-    
-                if appName == 'Criminal Case':
-                    for num2 in range(0, 11):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            sq_retweet += retweet ** 2
-                            total_retweet += retweet
-                    
-                    sd_dict[appName] = round(sqrt(((11*sq_retweet) - (total_retweet ** 2))/(11 * 10)), 1)
-                elif appName == 'WhatsApp Messenger':
-                    for num2 in range(0, 14):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            sq_retweet += retweet ** 2
-                            total_retweet += retweet
-                    
-                    sd_dict[appName] = round(sqrt(((14*sq_retweet) - (total_retweet ** 2))/(14 * 13)), 1)
-                elif appName == 'Super-Bright LED Flashlight':
-                    for num2 in range(0, 12):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            sq_retweet += retweet ** 2
-                            total_retweet += retweet
-                    
-                    sd_dict[appName] = round(sqrt(((12*sq_retweet) - (total_retweet ** 2))/(12 * 11)), 1)
-                else:
-                    for num2 in range(0, 18):
-                        tweet_dict = self.db.twitter.find({str(appName): {'$exists': 1}}, {str(appName) + '.tweet_' + str(num2): 1, '_id': 0})
-                            
-                        for info in tweet_dict:
-                            retweet = int(info[appName]['tweet_' + str(num2)]['retweet_count'])
-                            sq_retweet += retweet ** 2
-                            total_retweet += retweet
-                    
-                    sd_dict[appName] = round(sqrt(((18*sq_retweet) - (total_retweet ** 2))/(18 * 17)), 1)
+                stat_dict[app_name] = app_stat_dict
+                
+        twitter_stat['twitter'] = stat_dict
+
+        return twitter_stat
         
-        return sd_dict
+    def get_retweet_mean(self, app_name):
+        rt_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                rt_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['retweet_count']))
+        
+        if rt_count_list:
+            return int(round(numpy.mean(rt_count_list)))
+        else:
+            return 0
+            
+    def get_retweet_median(self, app_name):
+        rt_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                rt_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['retweet_count']))
+        
+        if rt_count_list:
+            rt_count_list.sort()
+            return int(round(numpy.median(rt_count_list)))
+        else:
+            return 0
+            
+    def get_retweet_mode(self, app_name):
+        rt_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                rt_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['retweet_count']))
+        
+        if rt_count_list:
+            return max(rt_count_list)
+        else:
+            return 0
+            
+    def get_retweet_SD(self, app_name):
+        rt_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                rt_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['retweet_count']))
+        
+        if rt_count_list:
+            return int(round(numpy.std(rt_count_list)))
+        else:
+            return 0
+    
+    def get_user_mean(self, app_name):
+        f_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                f_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['user']['followers_count']))
+        
+        if f_count_list:
+            return int(round(numpy.mean(f_count_list)))
+        else:
+            return 0
+            
+    def get_user_median(self, app_name):
+        f_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                f_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['user']['followers_count']))
+        
+        if f_count_list:
+            f_count_list.sort()
+            return int(round(numpy.median(f_count_list)))
+        else:
+            return 0
+            
+    def get_user_mode(self, app_name):
+        f_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                f_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['user']['followers_count']))
+                
+        if f_count_list:
+            return max(f_count_list)
+        else:
+            return 0
+            
+    def get_user_SD(self, app_name):
+        f_count_list = []
+
+        tweet_dict_cursor = self.db.twitter.find({str(app_name): {'$exists': 1}}, 
+                                          {str(app_name):1, '_id': 0})
+        
+        for tweet_dict in tweet_dict_cursor:
+            for num in range(1, len(tweet_dict[app_name])):
+                f_count_list.append(int(tweet_dict[app_name]['tweet_' + str(num)]['user']['followers_count']))
+        
+        if f_count_list:
+            return int(round(numpy.std(f_count_list)))
+        else:
+            return 0
