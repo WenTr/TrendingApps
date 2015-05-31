@@ -14,11 +14,11 @@ from json import dumps
 
 class Twitter_API:
     
-    consumer_key = 'AQOeMUImTqcPLm1KS847pdo6Y'
-    consumer_secret = 'FNFXTMjfyABt57UHaxstz2p8juasQRBenulQqGhqo85T1KxhCK'
+    consumer_key = ''
+    consumer_secret = ''
     
-    access_token = '313601183-CQKz2PLX8ohQZyaLDyQ64Vvp2Z3Q1Eq4CkbDtc8O'
-    access_secret = '1NbqrzmR7JaWKewqAVRXrk7FgJklGDpvrmpyONtuAqYbP'
+    access_token = ''
+    access_secret = ''
             
     def __init__(self):
         #Purposely empty
