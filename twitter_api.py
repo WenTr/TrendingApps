@@ -9,6 +9,7 @@ TwiiterSearch External Library: https://github.com/geduldig/TwitterAPI/blob/mast
 
 from TwitterAPI import *
 
+import re
 from json import dumps
 
 class Twitter_API:
@@ -25,11 +26,11 @@ class Twitter_API:
     
     def get_tweets(self, app_list):
         twitter_dict = {}
-        app_dict = {}
+        app_dict = {} 
         
         auth = self.auth_lib()
         
-        for app in app_list:          
+        for app in app_list:
             app_tweet_dict = self.search_tweets_lib(auth, '\"' + app + '\" app OR \"' + app + ' app\"')
 
             app_dict[app] = app_tweet_dict
@@ -43,11 +44,11 @@ class Twitter_API:
                          self.access_token, self.access_secret)
         
         return auth
-        
+
     def search_tweets_lib(self, auth, keyword):
         tweet_ID = 0
         tweet_group_dict = {}
-                
+        
         for tweet in auth.request('search/tweets', {'q': keyword, 'count': 100, 'lang': 'en'}):
             tweet_dict = {}
             tweet_ID += 1
@@ -61,13 +62,24 @@ class Twitter_API:
                     user_dict = {}
                     
                     for user_key in user_json_keys_list:
-                        user_dict[user_key] = tweet['user'][user_key]
+                        if user_key == 'created_at':
+                            date = re.findall('\w\w\w\s\d\d', str(tweet['user'][user_key]))[0]
+                            year = (re.findall('\s\d\d\d\d', str(tweet['user'][user_key]))[0]).strip()
+                    
+                            user_dict[user_key] = date + ' ' + year
+                        else:
+                            user_dict[user_key] = tweet['user'][user_key]
                     
                     tweet_dict[tweet_key] = user_dict
+                elif tweet_key == 'created_at':
+                    date = re.findall('\w\w\w\s\d\d', str(tweet[tweet_key]))[0]
+                    year = (re.findall('\s\d\d\d\d', str(tweet[tweet_key]))[0]).strip()
+                    
+                    tweet_dict[tweet_key] = date + ' ' + year
                 else:
                     tweet_dict[tweet_key] = tweet[tweet_key]
             
-            tweet_group_dict['tweet_' + str(tweet_ID)] = tweet_dict   
+            tweet_group_dict['tweet_' + str(tweet_ID)] = tweet_dict  
             '''
             print '-' * 20
             print 'Date: ' + tweet_dict['created_at']
