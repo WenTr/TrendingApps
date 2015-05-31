@@ -13,11 +13,9 @@ http://stackoverflow.com/questions/38987/how-can-i-merge-two-python-dictionaries
 from collections import Counter
 import pymongo
 import re
-import math
 import numpy as np
 from textblob import TextBlob
-from textblob.sentiments import NaiveBayesAnalyzer
-import json
+#import json
 
 conn = pymongo.MongoClient()
 db = conn['trendingapps']
@@ -30,15 +28,11 @@ class GooglePlayStats:
 
     def getMean(self, appRatings):
         for (appName, ratingList) in appRatings.items():
-            #print appName
-            #appMean = ( 1.0*sum(ratingList) )/len(ratingList)
             appMean = np.mean(ratingList)
             return round(appMean, 1)
             
     def getMedian(self, appRatings):
         for (appName, ratingList) in appRatings.items():
-            #mid = len(ratingList)/2
-            #return (1.0*( ratingList[mid] + ratingList[mid-1] ))/2
             return np.median(ratingList)            
             
     def getMode(self, appRatings):
@@ -47,16 +41,6 @@ class GooglePlayStats:
     
     def getStDev(self, appRatings):
         for (appName, ratingList) in appRatings.items():
-#            #numerator
-#            squaredList = [r**2 for r in ratingList]
-#            sumSquaredList = sum(squaredList)
-#            x = len(ratingList)*sumSquaredList - sum(ratingList)**2
-#    
-#            #denominator
-#            d = len(ratingList)*( len(ratingList)-1 )
-#            
-#            variance = (1.0*x)/d
-#            sD = round(math.sqrt(variance), 1)
             sD = np.std(ratingList)
             return sD
 
